@@ -14,10 +14,8 @@ trait BinaryFlags
 {
     /**
      * This will hold the mask for checking against
-     *
-     * @var int
      */
-    protected $mask;
+    protected ?int $mask = null;
 
     /**
      * This will be called on changes
@@ -31,7 +29,7 @@ trait BinaryFlags
      *
      * @return array
      */
-    public static function getAllFlags()
+    public static function getAllFlags(): array
     {
         try {
             $reflection = new ReflectionClass(get_called_class());
@@ -58,7 +56,7 @@ trait BinaryFlags
     /**
      * Get all available flags as a mask
      */
-    public static function getAllFlagsMask()
+    public static function getAllFlagsMask(): mixed
     {
         return array_reduce(
             array_keys(static::getAllFlags()),
@@ -72,15 +70,10 @@ trait BinaryFlags
     /**
      * Check mask against constants
      * and return the names or descriptions in a comma separated string or as array
-     *
-     * @param int [$mask = null]
-     * @param bool [$asArray = false]
-     *
-     * @return string|array
      */
-    public function getFlagNames($mask = null, $asArray = false)
+    public function getFlagNames(?int $mask = null, bool $asArray = false): string|array
     {
-        $mask  = isset($mask) ? $mask : $this->mask;
+        $mask  = $mask ?? $this->mask;
         $names = [];
 
         foreach (static::getAllFlags() as $flag => $desc) {
@@ -94,10 +87,8 @@ trait BinaryFlags
 
     /**
      * Set an function which will be called upon changes
-     *
-     * @param callable $onModify
      */
-    public function setOnModifyCallback(callable $onModify)
+    public function setOnModifyCallback(callable $onModify): void
     {
         $this->onModifyCallback = $onModify;
     }
@@ -105,7 +96,7 @@ trait BinaryFlags
     /**
      * Will be called upon changes and execute the callback, if set
      */
-    protected function onModify()
+    protected function onModify(): void
     {
         if (is_callable($this->onModifyCallback)) {
             call_user_func($this->onModifyCallback, $this);
@@ -114,12 +105,8 @@ trait BinaryFlags
 
     /**
      * This method will set the mask where will be checked against
-     *
-     * @param int $mask
-     *
-     * @return BinaryFlags
      */
-    public function setMask($mask)
+    public function setMask(int $mask): \Reinder83\BinaryFlags\BinaryFlags
     {
         $before     = $this->mask;
         $this->mask = $mask;
@@ -133,22 +120,16 @@ trait BinaryFlags
 
     /**
      * This method will return the current mask
-     *
-     * @return int
      */
-    public function getMask()
+    public function getMask(): ?int
     {
         return $this->mask;
     }
 
     /**
      * This will set flag(s) in the current mask
-     *
-     * @param int $flag
-     *
-     * @return BinaryFlags
      */
-    public function addFlag($flag)
+    public function addFlag(int $flag): \Reinder83\BinaryFlags\BinaryFlags
     {
         $before     = $this->mask;
         $this->mask |= $flag;
@@ -162,12 +143,8 @@ trait BinaryFlags
 
     /**
      * This will remove a flag(s) (if it's set) in the current mask
-     *
-     * @param int $flag
-     *
-     * @return BinaryFlags
      */
-    public function removeFlag($flag)
+    public function removeFlag(int $flag): \Reinder83\BinaryFlags\BinaryFlags
     {
         $before     = $this->mask;
         $this->mask &= ~$flag;
@@ -183,13 +160,8 @@ trait BinaryFlags
      * Check if given flag(s) are set in the current mask
      * By default it will check all bits in the given flag
      * When you want to match any of the given flags set $checkAll to false
-     *
-     * @param int  $flag
-     * @param bool $checkAll
-     *
-     * @return bool
      */
-    public function checkFlag($flag, $checkAll = true)
+    public function checkFlag(int $flag, bool $checkAll = true): bool
     {
         $result = $this->mask & $flag;
 
@@ -198,12 +170,8 @@ trait BinaryFlags
 
     /**
      * Check if any given flag(s) are set in the current mask
-     *
-     * @param int $mask
-     *
-     * @return bool
      */
-    public function checkAnyFlag($mask)
+    public function checkAnyFlag(int $mask): bool
     {
         return $this->checkFlag($mask, false);
     }
