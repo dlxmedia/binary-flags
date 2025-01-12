@@ -17,7 +17,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
 
     private int $currentPos = 0;
 
-    public function __construct(int $mask = 0, callable $onModify = null)
+    public function __construct(int $mask = 0, ?callable $onModify = null)
     {
         $this->setMask($mask);
 
